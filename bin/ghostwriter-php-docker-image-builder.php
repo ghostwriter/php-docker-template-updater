@@ -102,17 +102,18 @@ use function sprintf;
         ->addArgument('from', InputArgument::REQUIRED, 'The old version.')
         ->addArgument('to', InputArgument::REQUIRED, 'The new version.')
         ->setCode(
-            static function (InputInterface $input, OutputInterface $output) use ($container): int {
-                return $container->get(Dispatcher::class)
-                    ->dispatch(match ($input->getArgument('context')) {
-                        'composer' => new ComposerEvent($input, $output),
-                        'php' => new PhpVersionEvent($input, $output),
-                        'xdebug' => new XDebugEvent($input, $output),
-                        default => throw new InvalidArgumentException()
-                    })->isPropagationStopped() ?
-                        Command::FAILURE :
-                        Command::SUCCESS;
-            }
+            static fn (
+                InputInterface $input,
+                OutputInterface $output
+            ): int => $container->get(Dispatcher::class)
+                ->dispatch(match ($input->getArgument('context')) {
+                    'composer' => new ComposerEvent($input, $output),
+                    'php' => new PhpVersionEvent($input, $output),
+                    'xdebug' => new XDebugEvent($input, $output),
+                    default => throw new InvalidArgumentException()
+                })->isPropagationStopped() ?
+                    Command::FAILURE :
+                    Command::SUCCESS
         )
         ->run();
 })($_composer_autoload_path ?? dirname(__DIR__) . '/vendor/autoload.php');

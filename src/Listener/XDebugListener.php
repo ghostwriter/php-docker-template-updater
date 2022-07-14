@@ -25,19 +25,14 @@ final class XDebugListener extends AbstractListener
                 $this->checkout(self::BRANCH_MAIN);
             }
 
-            $phpVersionDir = sprintf('%s/%s', $this->gitRepository->getWorkingDir(), $phpVersion);
-            if (! is_dir($phpVersionDir)) {
-                continue;
-            }
-
-            $dockerFile = $phpVersionDir . '/Dockerfile';
+            $dockerFile = sprintf('%s/%s/Dockerfile', $this->gitRepository->getWorkingDir(), $phpVersion);
             if (! is_file($dockerFile)) {
                 continue;
             }
 
             $dockerFileContents = file_get_contents($dockerFile);
             if (1 === preg_match(sprintf('#XDEBUG_VERSION\s%s#', $from), $dockerFileContents)) {
-                $branchName = 'feature/php-' . $phpVersion . '/bump-xdebug-from-' . $from . '-to-' . $to;
+                $branchName = $this->branchName($phpVersion, 'xdebug', $from, $to);
 
                 $this->hasBranch($branchName) ?
                     $this->checkout($branchName) :

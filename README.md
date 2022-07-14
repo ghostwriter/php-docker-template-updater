@@ -23,10 +23,12 @@ composer require ghostwriter/ghostwriter-php-docker-template-updater
 
 ## Usage
 
-```php
-vendor/bin/ghostwriter-php-docker-template-updater composer {from-version} {to-version}
-vendor/bin/ghostwriter-php-docker-template-updater php {from-version} {to-version}
-vendor/bin/ghostwriter-php-docker-template-updater xdebug {from-version} {to-version}
+```shell
+$ ghostwriter-php-docker-template-updater composer {from-version} {to-version}
+
+$ ghostwriter-php-docker-template-updater php {from-version} {to-version}
+
+$ ghostwriter-php-docker-template-updater xdebug {from-version} {to-version}
 ```
 
 ## Testing

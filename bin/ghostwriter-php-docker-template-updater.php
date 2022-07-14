@@ -21,6 +21,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -101,6 +102,7 @@ use function sprintf;
         ->addArgument('context', InputArgument::REQUIRED, 'The content to update.')
         ->addArgument('from', InputArgument::REQUIRED, 'The old version.')
         ->addArgument('to', InputArgument::REQUIRED, 'The new version.')
+        ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Simulate the update.')
         ->setCode(
             static fn (
                 InputInterface $input,

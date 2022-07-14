@@ -64,7 +64,7 @@
         }
     },
     "bin": [
-        "bin/ghostwriter-php-docker-image-builder"
+        "bin/ghostwriter-php-docker-template-updater"
     ],
     "config": {
         "allow-plugins": {

@@ -20,32 +20,35 @@ final class PhpVersionListener extends AbstractListener
         $from = $event->getFrom();
         $to = $event->getTo();
 
+        $this->reset();
         $this->checkout(self::BRANCH_MAIN);
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
-            $phpVersionDir = sprintf('%s/%s', $this->gitRepository->getWorkingDir(), $phpVersion);
-            if (! is_dir($phpVersionDir)) {
-                continue;
-            }
-
             foreach (PhpSAPI::SUPPORTED as $type) {
                 if (! $this->isBranch(self::BRANCH_MAIN)) {
                     $this->checkout(self::BRANCH_MAIN);
                 }
 
-                $dockerFile = sprintf('%s/%s/Dockerfile', $phpVersionDir, $type);
+                $dockerFile = sprintf('%s/%s/%s/Dockerfile', $this->gitRepository->getWorkingDir(), $phpVersion, $type);
                 if (! is_file($dockerFile)) {
                     continue;
                 }
-
+                $format = 'php:%s-';
                 $dockerFileContents = file_get_contents($dockerFile);
-                if (1 === preg_match(sprintf('#php:%s-#', $from), $dockerFileContents)) {
-                    $branchName = sprintf('feature/php-%s/bump-php-%s-from-%s-to-%s', $phpVersion, $type, $from, $to);
-
+                if(str_contains($dockerFileContents, sprintf($format, $from))) {
+                    $branchName = $this->branchName($phpVersion, 'php-' . $type, $from, $to);
+                    
                     $this->hasBranch($branchName) ?
                         $this->checkout($branchName) :
                         $this->checkout(self::BRANCH_MAIN, $branchName);
 
-                    file_put_contents($dockerFile, str_replace($from, $to, $dockerFileContents));
+                    file_put_contents(
+                        $dockerFile,
+                        str_replace(
+                            sprintf($format, $from),
+                            sprintf($format, $to),
+                            $dockerFileContents
+                        )
+                    );
 
                     if ($this->hasChanges()) {
                         $this->add($dockerFile);

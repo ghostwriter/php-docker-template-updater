@@ -8,7 +8,6 @@ namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Listener;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\AbstractEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpSAPI;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
-use InvalidArgumentException;
 use Throwable;
 
 final class PhpVersionListener extends AbstractListener
@@ -18,74 +17,43 @@ final class PhpVersionListener extends AbstractListener
      */
     public function __invoke(AbstractEvent $event): void
     {
-        $input = $event->getInput();
-        $output = $event->getOutput();
+        $from = $event->getFrom();
+        $to = $event->getTo();
 
-        $from = $input->getArgument('from');
-        $to = $input->getArgument('to');
-        $dryRun = $input->getOption('dry-run');
-
-        if (! is_string($from) || '' === $from) {
-            throw new InvalidArgumentException('$from is invalid');
-        }
-
-        if (! is_string($to) || '' === $to) {
-            throw new InvalidArgumentException('$to is invalid');
-        }
-
-        $git = $this->gitRepository->getWorkingCopy();
-        $dir = $this->gitRepository->getWorkingDir();
-
-        $git->checkout('main');
+        $this->checkout(self::BRANCH_MAIN);
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
-            $phpVersionDir = sprintf('%s/%s', $dir, $phpVersion);
+            $phpVersionDir = sprintf('%s/%s', $this->gitRepository->getWorkingDir(), $phpVersion);
             if (! is_dir($phpVersionDir)) {
                 continue;
             }
 
             foreach (PhpSAPI::SUPPORTED as $type) {
+                if (! $this->isBranch(self::BRANCH_MAIN)) {
+                    $this->checkout(self::BRANCH_MAIN);
+                }
+
                 $dockerFile = sprintf('%s/%s/Dockerfile', $phpVersionDir, $type);
-                if (!is_file($dockerFile)) {
+                if (! is_file($dockerFile)) {
                     continue;
                 }
 
                 $dockerFileContents = file_get_contents($dockerFile);
-                if (1 === preg_match(sprintf('#php:%s-#', $from), $dockerFileContents, $matches)) {
-                    $output->writeln($phpVersion . ' dockerFile contents "' . $from . '" - ' . $dockerFile);
+                if (1 === preg_match(sprintf('#php:%s-#', $from), $dockerFileContents)) {
                     $branchName = sprintf('feature/php-%s/bump-php-%s-from-%s-to-%s', $phpVersion, $type, $from, $to);
 
-                    if ($this->hasBranch($branchName)) {
-                        $output->writeln('checkoutOldBranch - ' . $branchName);
-                        $git->checkout($branchName);
-                    } else {
-                        $output->writeln('checkoutNewBranch - ' . $branchName);
-                        $git->checkout('main', $branchName);
-                    }
+                    $this->hasBranch($branchName) ?
+                        $this->checkout($branchName) :
+                        $this->checkout(self::BRANCH_MAIN, $branchName);
 
                     file_put_contents($dockerFile, str_replace($from, $to, $dockerFileContents));
 
                     if ($this->hasChanges()) {
-                        $output->writeln('git:add - ' . $dockerFile);
                         $this->add($dockerFile);
-
-                        $output->writeln('git:commit - ' . $branchName);
-                        $this->commit([
-                            '--message',
-                            sprintf(
-                                '[PHP %s]Bump PHP-%s from %s to %s',
-                                $phpVersion,
-                                strtoupper($type),
-                                $from,
-                                $to
-                            ),
-                            '--signoff',
-                            '--gpg-sign',
-                        ]);
+                        $this->commit(
+                            sprintf('[PHP %s]Bump PHP-%s from %s to %s', $phpVersion, strtoupper($type), $from, $to)
+                        );
                     }
-                } else {
-                    $output->writeln($phpVersion . ' dockerFile does not content "' . $from . '" - ' . $dockerFile);
                 }
-                $git->checkout('main');
             }
         }
     }

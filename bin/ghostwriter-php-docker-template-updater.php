@@ -106,12 +106,12 @@ use function sprintf;
         ->setCode(
             static fn (
                 InputInterface $input,
-                OutputInterface $output
+                OutputInterface $_
             ): int => $container->get(Dispatcher::class)
                 ->dispatch(match ($input->getArgument('context')) {
-                    'composer' => new ComposerEvent($input, $output),
-                    'php' => new PhpVersionEvent($input, $output),
-                    'xdebug' => new XDebugEvent($input, $output),
+                    'composer' => new ComposerEvent($input),
+                    'php' => new PhpVersionEvent($input),
+                    'xdebug' => new XDebugEvent($input),
                     default => throw new InvalidArgumentException()
                 })->isPropagationStopped() ?
                     Command::FAILURE :

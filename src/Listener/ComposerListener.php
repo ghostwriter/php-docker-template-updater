@@ -51,8 +51,6 @@ final class ComposerListener
                 continue;
             }
 
-
-
             $dockerFileContents = file_get_contents($dockerFile);
 
             if (1 === preg_match(sprintf('#_VERSION\s%s#', $from), $dockerFileContents, $matches)) {

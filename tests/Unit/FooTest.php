@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Ghostwriter\wip\Tests\Unit;
+namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Tests\Unit;
 
-use Ghostwriter\wip\Foo;
+use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Foo;
 
 /**
- * @coversDefaultClass \Ghostwriter\wip\Foo
+ * @coversDefaultClass \Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Foo
  *
  * @internal
  *
@@ -15,7 +15,7 @@ use Ghostwriter\wip\Foo;
  */
 final class FooTest extends AbstractTestCase
 {
-    /** @covers \Ghostwriter\wip\Foo::test */
+    /** @covers \Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Foo::test */
     public function test(): void
     {
         self::assertTrue((new Foo())->test());

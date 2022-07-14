@@ -73,8 +73,6 @@ abstract class AbstractListener
 
     public function reset(): void
     {
-        $this->symfonyStyle->warning(
-            $this->gitRepository->run('reset', ['--hard'])
-        );
+        $this->symfonyStyle->warning($this->gitRepository->run('reset', ['--hard']));
     }
 }

@@ -36,7 +36,7 @@ final class ComposerListener extends AbstractListener
 
             $dockerFileContents = file_get_contents($dockerFile);
             if (1 === preg_match(sprintf('#_VERSION\s%s#', $from), $dockerFileContents)) {
-                $branchName = 'feature/php-' . $phpVersion . '/bump-composer-from-' . $from . '-to-' . $to;
+                $branchName = $this->branchName($phpVersion, 'composer', $from, $to);
 
                 $this->hasBranch($branchName) ?
                     $this->checkout($branchName) :

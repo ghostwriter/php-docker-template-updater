@@ -27,6 +27,11 @@ abstract class AbstractListener
         return $this->gitRepository->run('add', [$filePattern]);
     }
 
+    public function branchName(string ...$values): string
+    {
+        return strtolower(sprintf('feature/php-%s/bump-%s-from-%s-to-%s', ...$values));
+    }
+
     public function checkout(string $revision, string $branch = null): void
     {
         is_string($branch) ?
@@ -64,5 +69,12 @@ abstract class AbstractListener
     public function isBranch(string $branchName): bool
     {
         return trim($this->gitRepository->run('symbolic-ref', ['--short', 'HEAD'])) === $branchName;
+    }
+
+    public function reset(): void
+    {
+        $this->symfonyStyle->warning(
+            $this->gitRepository->run('reset', ['--hard'])
+        );
     }
 }

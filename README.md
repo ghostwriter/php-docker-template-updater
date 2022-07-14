@@ -1,12 +1,12 @@
-# wip
+# Ghostwriter-PHP Docker Template Updater
 
-[![Compliance](https://github.com/ghostwriter/wip/actions/workflows/compliance.yml/badge.svg)](https://github.com/ghostwriter/wip/actions/workflows/compliance.yml)
-[![Supported PHP Version](https://badgen.net/packagist/php/ghostwriter/wip?color=8892bf)](https://www.php.net/supported-versions)
-[![Type Coverage](https://shepherd.dev/github/ghostwriter/wip/coverage.svg)](https://shepherd.dev/github/ghostwriter/wip)
-[![Latest Version on Packagist](https://badgen.net/packagist/v/ghostwriter/wip)](https://packagist.org/packages/ghostwriter/wip)
-[![Downloads](https://badgen.net/packagist/dt/ghostwriter/wip?color=blue)](https://packagist.org/packages/ghostwriter/wip)
+[![Compliance](https://github.com/ghostwriter/ghostwriter-php-docker-template-updater/actions/workflows/compliance.yml/badge.svg)](https://github.com/ghostwriter/ghostwriter-php-docker-template-updater/actions/workflows/compliance.yml)
+[![Supported PHP Version](https://badgen.net/packagist/php/ghostwriter/ghostwriter-php-docker-template-updater?color=8892bf)](https://www.php.net/supported-versions)
+[![Type Coverage](https://shepherd.dev/github/ghostwriter/ghostwriter-php-docker-template-updater/coverage.svg)](https://shepherd.dev/github/ghostwriter/ghostwriter-php-docker-template-updater)
+[![Latest Version on Packagist](https://badgen.net/packagist/v/ghostwriter/ghostwriter-php-docker-template-updater)](https://packagist.org/packages/ghostwriter/ghostwriter-php-docker-template-updater)
+[![Downloads](https://badgen.net/packagist/dt/ghostwriter/ghostwriter-php-docker-template-updater?color=blue)](https://packagist.org/packages/ghostwriter/ghostwriter-php-docker-template-updater)
 
-work in progress
+Helps me update various docker templates in `ghostwriter/php`.
 
 > **Warning**
 >
@@ -18,13 +18,15 @@ work in progress
 You can install the package via composer:
 
 ``` bash
-composer require ghostwriter/wip
+composer require ghostwriter/ghostwriter-php-docker-template-updater
 ```
 
 ## Usage
 
 ```php
-// work in progress
+vendor/bin/ghostwriter-php-docker-template-updater composer {from-version} {to-version}
+vendor/bin/ghostwriter-php-docker-template-updater php {from-version} {to-version}
+vendor/bin/ghostwriter-php-docker-template-updater xdebug {from-version} {to-version}
 ```
 
 ## Testing
@@ -41,26 +43,14 @@ Please see [CHANGELOG.md](./CHANGELOG.md) for more information what has changed 
 
 If you discover any security related issues, please email `nathanael.esayeas@protonmail.com` instead of using the issue tracker.
 
-## Sponsors
+## Support
 
-[![ghostwriter's GitHub Sponsors](https://img.shields.io/github/sponsors/ghostwriter?label=Sponsors&logo=GitHub%20Sponsors)](https://github.com/sponsors/ghostwriter)
-
-Maintaining open source software is a thankless, time-consuming job.
-
-Sponsorships are one of the best ways to contribute to the long-term sustainability of an open-source licensed project.
-
-Please consider giving back, to fund the continued development of `ghostwriter/wip`, by sponsoring me here on GitHub.
-
-[[Become a GitHub Sponsor](https://github.com/sponsors/ghostwriter)]
-
-### For Developers
-
-Please consider helping your company become a GitHub Sponsor, to support the open-source licensed project that runs your business.
+- [Become a GitHub Sponsor](https://github.com/sponsors/ghostwriter)
 
 ## Credits
 
 - [Nathanael Esayeas](https://github.com/ghostwriter)
-- [All Contributors](https://github.com/ghostwriter/wip/contributors)
+- [All Contributors](https://github.com/ghostwriter/ghostwriter-php-docker-template-updater/contributors)
 
 ## License
 

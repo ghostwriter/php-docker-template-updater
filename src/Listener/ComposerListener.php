@@ -5,28 +5,26 @@ declare(strict_types=1);
 
 namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Listener;
 
-use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\ComposerEvent;
+use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\AbstractEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
-use Gitonomy\Git\Repository;
 use InvalidArgumentException;
 use Throwable;
 
-final class ComposerListener
+final class ComposerListener extends AbstractListener
 {
-    public function __construct(private Repository $repository)
-    {
-    }
-
     /**
      * @throws Throwable
      */
-    public function __invoke(ComposerEvent $composerEvent): void
+    public function __invoke(AbstractEvent $event): void
     {
-        $input = $composerEvent->getInput();
-        $output = $composerEvent->getOutput();
+        $input = $event->getInput();
+        $output = $event->getOutput();
 
         $from = $input->getArgument('from');
         $to = $input->getArgument('to');
+        // TODO: Should i add a `--dry-run` option?
+        // $dryRun = $input->getOption('dry-run');
+
 
         if (! is_string($from) || '' === $from) {
             throw new InvalidArgumentException('$from is invalid');
@@ -36,8 +34,8 @@ final class ComposerListener
             throw new InvalidArgumentException('$to is invalid');
         }
 
-        $git = $this->repository->getWorkingCopy();
-        $dir = $this->repository->getWorkingDir();
+        $git = $this->gitRepository->getWorkingCopy();
+        $dir = $this->gitRepository->getWorkingDir();
 
         $git->checkout('main');
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
@@ -88,26 +86,5 @@ final class ComposerListener
 
             $git->checkout('main');
         }
-    }
-
-    public function add(string $filePattern): string
-    {
-        return $this->repository->run('add', [$filePattern]);
-    }
-
-    public function commit(array $args): string
-    {
-        return $this->repository->run('commit', [...$args]);
-    }
-
-    public function hasBranch(string $branchName): bool
-    {
-        return true === $this->repository->getReferences()
-            ->hasBranch($branchName);
-    }
-
-    public function hasChanges(): bool
-    {
-        return '' !== $this->repository->run('status', ['-s']);
     }
 }

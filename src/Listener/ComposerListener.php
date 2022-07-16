@@ -24,28 +24,24 @@ final class ComposerListener extends AbstractListener
                 $this->checkout(self::BRANCH_MAIN);
             }
 
-            $phpVersionDir = sprintf('%s/%s', $this->gitRepository->getWorkingDir(), $phpVersion);
-            if (! is_dir($phpVersionDir)) {
-                continue;
-            }
-
-            $dockerFile = $phpVersionDir . '/composer/Dockerfile';
+            $dockerFile = $this->dockerfilePath($phpVersion, 'composer');
             if (! is_file($dockerFile)) {
                 continue;
             }
 
+            $format = '_VERSION %s';
+            $formattedFrom = sprintf($format, $from);
+            $formattedTo = sprintf($format, $to);
+
             $dockerFileContents = file_get_contents($dockerFile);
-            if (1 === preg_match(sprintf('#_VERSION\s%s#', $from), $dockerFileContents)) {
+            if (str_contains($dockerFileContents, $formattedFrom)) {
                 $branchName = $this->branchName($phpVersion, 'composer', $from, $to);
 
                 $this->hasBranch($branchName) ?
                     $this->checkout($branchName) :
                     $this->checkout(self::BRANCH_MAIN, $branchName);
 
-                file_put_contents(
-                    $dockerFile,
-                    str_replace('_VERSION ' . $from, '_VERSION ' . $to, $dockerFileContents)
-                );
+                file_put_contents($dockerFile, str_replace($formattedFrom, $formattedTo, $dockerFileContents));
 
                 if ($this->hasChanges()) {
                     $this->add($dockerFile);

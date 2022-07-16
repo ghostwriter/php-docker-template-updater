@@ -50,6 +50,16 @@ abstract class AbstractListener
         return $this->gitRepository->run('commit', ['--message', $message, '--signoff', '--gpg-sign']);
     }
 
+    public function dockerfilePath(string $phpVersion, string $path = null): string
+    {
+        if(null === $path)
+        {
+            return sprintf('%s/%s/Dockerfile', $this->gitRepository->getWorkingDir(), $phpVersion);
+        }
+
+        return sprintf('%s/%s/%s/Dockerfile', $this->gitRepository->getWorkingDir(), $phpVersion, $path);
+    }
+
     public function hasBranch(string $branchName): bool
     {
         return true === $this->gitRepository->getReferences()

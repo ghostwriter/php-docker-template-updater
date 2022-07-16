@@ -28,7 +28,7 @@ final class PhpVersionListener extends AbstractListener
                     $this->checkout(self::BRANCH_MAIN);
                 }
 
-                $dockerFile = sprintf('%s/%s/%s/Dockerfile', $this->gitRepository->getWorkingDir(), $phpVersion, $type);
+                $dockerFile = $this->dockerfilePath($phpVersion, $type);
                 if (! is_file($dockerFile)) {
                     continue;
                 }

@@ -25,7 +25,7 @@ final class XDebugListener extends AbstractListener
                 $this->checkout(self::BRANCH_MAIN);
             }
 
-            $dockerFile = sprintf('%s/%s/Dockerfile', $this->gitRepository->getWorkingDir(), $phpVersion);
+            $dockerFile = $this->dockerfilePath($phpVersion);
             if (! is_file($dockerFile)) {
                 continue;
             }

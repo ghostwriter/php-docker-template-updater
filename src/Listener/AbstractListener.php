@@ -52,8 +52,7 @@ abstract class AbstractListener
 
     public function dockerfilePath(string $phpVersion, string $path = null): string
     {
-        if(null === $path)
-        {
+        if (null === $path) {
             return sprintf('%s/%s/Dockerfile', $this->gitRepository->getWorkingDir(), $phpVersion);
         }
 

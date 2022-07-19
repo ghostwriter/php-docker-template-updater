@@ -11,6 +11,7 @@ use Ghostwriter\EventDispatcher\Dispatcher;
 use Ghostwriter\EventDispatcher\ListenerProvider;
 use Ghostwriter\EventDispatcher\ServiceProvider\EventDispatcherServiceProvider;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\ComposerEvent;
+use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\PhpExtensionEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\PhpVersionEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\XDebugEvent;
 use Gitonomy\Git\Repository;
@@ -110,6 +111,7 @@ use function sprintf;
             ): int => $container->get(Dispatcher::class)
                 ->dispatch(match ($input->getArgument('context')) {
                     'composer' => new ComposerEvent($input),
+                    'ext' => new PhpExtensionEvent($input),
                     'php' => new PhpVersionEvent($input),
                     'xdebug' => new XDebugEvent($input),
                     default => throw new InvalidArgumentException()

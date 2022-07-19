@@ -5,7 +5,10 @@ declare(strict_types=1);
 
 namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Listener;
 
+use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpSAPI;
+use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
 use Gitonomy\Git\Repository;
+use RuntimeException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class AbstractListener
@@ -19,6 +22,17 @@ abstract class AbstractListener
         protected Repository $gitRepository,
         protected SymfonyStyle $symfonyStyle
     ) {
+        $cwd = $this->gitRepository->getWorkingDir();
+        foreach (PhpVersion::SUPPORTED as $version) {
+            if (! is_file(sprintf('%s/%s/Dockerfile', $cwd, $version))) {
+                throw new RuntimeException('Invalid dir');
+            }
+            foreach (PhpSAPI::SUPPORTED as $type) {
+                if (! is_file(sprintf('%s/%s/%s/Dockerfile', $cwd, $version, $type))) {
+                    throw new RuntimeException('Invalid SAPI dir');
+                }
+            }
+        }
     }
 
     public function add(string $filePattern): string
@@ -27,26 +41,19 @@ abstract class AbstractListener
         return $this->gitRepository->run('add', [$filePattern]);
     }
 
-    public function branchName(string ...$values): string
+    public function branchName(string $phpVersion, string $tool, string $from, string $to): string
     {
-        return strtolower(sprintf('feature/php-%s/bump-%s-from-%s-to-%s', ...$values));
+        return strtolower(sprintf('feature/php-%s/bump-%s-from-%s-to-%s', $phpVersion, $tool, $from, $to));
     }
 
     public function checkout(string $revision, string $branch = null): void
     {
-        is_string($branch) ?
-            $this->symfonyStyle->info(sprintf('git:checkout - %s from %s', $branch, $revision)) :
-            $this->symfonyStyle->info('git:checkout - ' . $revision);
-
-        $this->gitRepository
-            ->getWorkingCopy()
-            ->checkout($revision, $branch);
+        $this->switch($branch ?? $revision, is_string($branch));
     }
 
     public function commit(string $message): string
     {
         $this->symfonyStyle->info('git:commit - ' . $message);
-
         return $this->gitRepository->run('commit', ['--message', $message, '--signoff', '--gpg-sign']);
     }
 
@@ -83,5 +90,11 @@ abstract class AbstractListener
     public function reset(): void
     {
         $this->symfonyStyle->warning($this->gitRepository->run('reset', ['--hard']));
+    }
+
+    public function switch(string $branch, bool $create = false): void
+    {
+        $this->symfonyStyle->info(sprintf('git:switch - %s', $create ? 'new - ' . $branch : $branch));
+        $this->gitRepository->run('switch', $create ? ['-c', $branch] : [$branch]);
     }
 }

@@ -44,6 +44,8 @@ final class XDebugListener extends AbstractListener
                 if ($this->hasChanges()) {
                     $this->add($dockerFile);
                     $this->commit(sprintf('[PHP %s]Bump Xdebug from %s to %s', $phpVersion, $from, $to));
+
+                    // $this->pushAndMerge();
                 }
             }
         }

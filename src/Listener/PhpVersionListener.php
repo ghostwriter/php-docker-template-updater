@@ -37,9 +37,7 @@ final class PhpVersionListener extends AbstractListener
                 if (str_contains($dockerFileContents, sprintf($format, $from))) {
                     $branchName = $this->branchName($phpVersion, 'php-' . $type, $from, $to);
 
-                    $this->hasBranch($branchName) ?
-                        $this->checkout($branchName) :
-                        $this->checkout(self::BRANCH_MAIN, $branchName);
+                    $this->switch($branchName, ! $this->hasBranch($branchName));
 
                     file_put_contents(
                         $dockerFile,

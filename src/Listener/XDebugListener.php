@@ -34,9 +34,7 @@ final class XDebugListener extends AbstractListener
             if (1 === preg_match(sprintf('#XDEBUG_VERSION\s%s#', $from), $dockerFileContents)) {
                 $branchName = $this->branchName($phpVersion, 'xdebug', $from, $to);
 
-                $this->hasBranch($branchName) ?
-                    $this->checkout($branchName) :
-                    $this->checkout(self::BRANCH_MAIN, $branchName);
+                $this->switch($branchName, ! $this->hasBranch($branchName));
 
                 file_put_contents(
                     $dockerFile,

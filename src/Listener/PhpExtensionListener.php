@@ -8,7 +8,6 @@ namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Listener;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\AbstractEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpSAPI;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
-use Symfony\Component\Process\Process;
 use Throwable;
 
 final class PhpExtensionListener extends AbstractListener
@@ -56,10 +55,7 @@ final class PhpExtensionListener extends AbstractListener
                             )
                         );
 
-                        // $this->gitRepository->run('push');
-
-                        // Process::fromShellCommandline('gh pr create --base "main" -f')->mustRun();
-                        // Process::fromShellCommandline(sprintf('gh pr merge %s --merge', $branchName))->mustRun();
+                        // $this->pushAndMerge();
                     }
                 }
             }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Tests\Unit;
 
-
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\ComposerEvent;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,7 +28,7 @@ final class ComposerEventTest extends AbstractTestCase
                 new ArrayInput(
                     [
                         'from' => '1.2.3',
-                        'to' =>'1.2.4'
+                        'to' =>'1.2.4',
                     ],
                     new InputDefinition([
                         new InputArgument('from', InputArgument::REQUIRED),

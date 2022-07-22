@@ -44,6 +44,8 @@ final class ComposerListener extends AbstractListener
                 if ($this->hasChanges()) {
                     $this->add($dockerFile);
                     $this->commit(sprintf('[PHP %s]Bump composer/composer from %s to %s', $phpVersion, $from, $to));
+
+                    // $this->pushAndMerge();
                 }
             }
         }

@@ -10,6 +10,7 @@ use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
 use Gitonomy\Git\Repository;
 use RuntimeException;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Process\Process;
 
 abstract class AbstractListener
 {
@@ -85,6 +86,13 @@ abstract class AbstractListener
     public function isBranch(string $branchName): bool
     {
         return trim($this->gitRepository->run('symbolic-ref', ['--short', 'HEAD'])) === $branchName;
+    }
+
+    public function pushAndMerge(): void
+    {
+        $this->gitRepository->run('push');
+        Process::fromShellCommandline('gh pr create --base "main" -f')->mustRun();
+        Process::fromShellCommandline('gh pr merge --merge')->mustRun();
     }
 
     public function reset(): void

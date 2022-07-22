@@ -49,6 +49,8 @@ final class PhpVersionListener extends AbstractListener
                         $this->commit(
                             sprintf('[PHP %s]Bump PHP-%s from %s to %s', $phpVersion, strtoupper($type), $from, $to)
                         );
+
+                        // $this->pushAndMerge();
                     }
                 }
             }

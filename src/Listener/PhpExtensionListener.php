@@ -5,21 +5,16 @@ declare(strict_types=1);
 
 namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Listener;
 
-use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\AbstractEvent;
+use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\PhpExtensionEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpSAPI;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
-use Throwable;
 
 final class PhpExtensionListener extends AbstractListener
 {
-    /**
-     * @throws Throwable
-     */
-    public function __invoke(AbstractEvent $event): void
+    public function __invoke(PhpExtensionEvent $event): void
     {
-        $extension = explode('-', $event->getFrom())[0];
-        $from = explode('-', $event->getFrom())[1];
-        $to = explode('-', $event->getTo())[1];
+        [$extension, $from] = explode('-', $event->getFrom());
+        [, $to] = explode('-', $event->getTo());
 
         $this->reset();
         $this->switch(self::BRANCH_MAIN);
@@ -44,18 +39,18 @@ final class PhpExtensionListener extends AbstractListener
 
                     if ($this->hasChanges()) {
                         $this->add($dockerFile);
-                        $this->commit(
-                            sprintf(
-                                '[PHP-%s %s]Bump `%s` extension from %s to %s',
-                                strtoupper($type),
-                                $phpVersion,
-                                $extension,
-                                $from,
-                                $to
-                            )
+
+                        $commitMessage =  sprintf(
+                            '[PHP-%s %s]Bump `%s` extension from %s to %s',
+                            strtoupper($type),
+                            $phpVersion,
+                            $extension,
+                            $from,
+                            $to
                         );
 
-                        // $this->pushAndMerge();
+                        $this->commit($commitMessage);
+                        $this->pushAndMerge($commitMessage);
                     }
                 }
             }

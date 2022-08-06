@@ -16,12 +16,10 @@ final class PhpVersionListener extends AbstractListener
         $from = $event->getFrom();
         $to = $event->getTo();
 
-        $this->reset();
-        $this->checkout(self::BRANCH_MAIN);
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
             foreach (PhpSAPI::SUPPORTED as $type) {
                 if (! $this->isBranch(self::BRANCH_MAIN)) {
-                    $this->checkout(self::BRANCH_MAIN);
+                    $this->reset();
                 }
 
                 $dockerFile = $this->dockerfilePath($phpVersion, $type);

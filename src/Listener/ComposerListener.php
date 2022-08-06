@@ -5,24 +5,18 @@ declare(strict_types=1);
 
 namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Listener;
 
-use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\AbstractEvent;
+use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\ComposerEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
-use Throwable;
 
 final class ComposerListener extends AbstractListener
 {
-    /**
-     * @throws Throwable
-     */
-    public function __invoke(AbstractEvent $event): void
+    public function __invoke(ComposerEvent $event): void
     {
         $from = $event->getFrom();
         $to = $event->getTo();
 
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
-            if (! $this->isBranch(self::BRANCH_MAIN)) {
-                $this->checkout(self::BRANCH_MAIN);
-            }
+            $this->reset();
 
             $dockerFile = $this->dockerfilePath($phpVersion, 'composer');
             if (! is_file($dockerFile)) {
@@ -43,9 +37,11 @@ final class ComposerListener extends AbstractListener
 
                 if ($this->hasChanges()) {
                     $this->add($dockerFile);
-                    $this->commit(sprintf('[PHP %s]Bump composer/composer from %s to %s', $phpVersion, $from, $to));
 
-                    // $this->pushAndMerge();
+                    $commitMessage = sprintf('[PHP %s]Bump composer/composer from %s to %s', $phpVersion, $from, $to);
+
+                    $this->commit($commitMessage);
+                    $this->pushAndMerge($commitMessage);
                 }
             }
         }

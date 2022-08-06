@@ -5,25 +5,18 @@ declare(strict_types=1);
 
 namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Listener;
 
-use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\AbstractEvent;
+use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\XDebugEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
-use Throwable;
 
 final class XDebugListener extends AbstractListener
 {
-    /**
-     * @throws Throwable
-     */
-    public function __invoke(AbstractEvent $event): void
+    public function __invoke(XDebugEvent $event): void
     {
         $from = $event->getFrom();
         $to = $event->getTo();
 
-        $this->checkout(self::BRANCH_MAIN);
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
-            if (! $this->isBranch(self::BRANCH_MAIN)) {
-                $this->checkout(self::BRANCH_MAIN);
-            }
+            $this->reset();
 
             $dockerFile = $this->dockerfilePath($phpVersion);
             if (! is_file($dockerFile)) {
@@ -43,9 +36,11 @@ final class XDebugListener extends AbstractListener
 
                 if ($this->hasChanges()) {
                     $this->add($dockerFile);
-                    $this->commit(sprintf('[PHP %s]Bump Xdebug from %s to %s', $phpVersion, $from, $to));
 
-                    // $this->pushAndMerge();
+                    $commitMessage =  sprintf('[PHP %s]Bump Xdebug from %s to %s', $phpVersion, $from, $to);
+
+                    $this->commit($commitMessage);
+                    $this->pushAndMerge($commitMessage);
                 }
             }
         }

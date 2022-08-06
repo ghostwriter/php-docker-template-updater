@@ -5,28 +5,20 @@ declare(strict_types=1);
 
 namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Listener;
 
-use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\AbstractEvent;
+use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\PhpVersionEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpSAPI;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
-use Throwable;
 
 final class PhpVersionListener extends AbstractListener
 {
-    /**
-     * @throws Throwable
-     */
-    public function __invoke(AbstractEvent $event): void
+    public function __invoke(PhpVersionEvent $event): void
     {
         $from = $event->getFrom();
         $to = $event->getTo();
 
-        $this->reset();
-        $this->checkout(self::BRANCH_MAIN);
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
             foreach (PhpSAPI::SUPPORTED as $type) {
-                if (! $this->isBranch(self::BRANCH_MAIN)) {
-                    $this->checkout(self::BRANCH_MAIN);
-                }
+                $this->reset();
 
                 $dockerFile = $this->dockerfilePath($phpVersion, $type);
                 if (! is_file($dockerFile)) {
@@ -46,11 +38,17 @@ final class PhpVersionListener extends AbstractListener
 
                     if ($this->hasChanges()) {
                         $this->add($dockerFile);
-                        $this->commit(
-                            sprintf('[PHP %s]Bump PHP-%s from %s to %s', $phpVersion, strtoupper($type), $from, $to)
+
+                        $commitMessage = sprintf(
+                            '[PHP %s]Bump PHP-%s from %s to %s',
+                            $phpVersion,
+                            strtoupper($type),
+                            $from,
+                            $to
                         );
 
-                        // $this->pushAndMerge();
+                        $this->commit($commitMessage);
+                        $this->pushAndMerge($commitMessage);
                     }
                 }
             }

@@ -18,9 +18,7 @@ final class PhpExtensionListener extends AbstractListener
 
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
             foreach (PhpSAPI::SUPPORTED as $type) {
-                if (! $this->isBranch(self::BRANCH_MAIN)) {
-                    $this->reset();
-                }
+                $this->reset();
 
                 $dockerFile = $this->dockerfilePath($phpVersion, $type);
                 if (! is_file($dockerFile)) {

@@ -5,17 +5,13 @@ declare(strict_types=1);
 
 namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Listener;
 
-use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\AbstractEvent;
+use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\PhpVersionEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpSAPI;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
-use Throwable;
 
 final class PhpVersionListener extends AbstractListener
 {
-    /**
-     * @throws Throwable
-     */
-    public function __invoke(AbstractEvent $event): void
+    public function __invoke(PhpVersionEvent $event): void
     {
         $from = $event->getFrom();
         $to = $event->getTo();
@@ -46,11 +42,17 @@ final class PhpVersionListener extends AbstractListener
 
                     if ($this->hasChanges()) {
                         $this->add($dockerFile);
-                        $this->commit(
-                            sprintf('[PHP %s]Bump PHP-%s from %s to %s', $phpVersion, strtoupper($type), $from, $to)
+
+                        $commitMessage = sprintf(
+                            '[PHP %s]Bump PHP-%s from %s to %s',
+                            $phpVersion,
+                            strtoupper($type),
+                            $from,
+                            $to
                         );
 
-                        // $this->pushAndMerge();
+                        $this->commit($commitMessage);
+                        $this->pushAndMerge($commitMessage);
                     }
                 }
             }

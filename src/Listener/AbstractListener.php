@@ -19,6 +19,8 @@ abstract class AbstractListener
      */
     protected const BRANCH_MAIN = 'main';
 
+    private const SIGNED_OFF_BY='Signed-off-by: Nathanael Esayeas <nathanael.esayeas@protonmail.com>';
+
     public function __construct(
         protected Repository $gitRepository,
         protected SymfonyStyle $symfonyStyle
@@ -88,16 +90,20 @@ abstract class AbstractListener
         return trim($this->gitRepository->run('symbolic-ref', ['--short', 'HEAD'])) === $branchName;
     }
 
-    public function pushAndMerge(): void
+    public function pushAndMerge(string $commitMessage, string $signedOffBy = self::SIGNED_OFF_BY): void
     {
-        $this->gitRepository->run('push');
+        $this->symfonyStyle->warning($this->gitRepository->run('push'));
         Process::fromShellCommandline('gh pr create --base "main" -f')->mustRun();
-        Process::fromShellCommandline('gh pr merge --merge')->mustRun();
+        Process::fromShellCommandline(
+            sprintf('gh pr merge --merge --delete-branch --subject "%s" --body "%s" ', $commitMessage, $signedOffBy . PHP_EOL)
+        )->mustRun();
     }
 
     public function reset(): void
     {
+        $this->switch(self::BRANCH_MAIN);
         $this->symfonyStyle->warning($this->gitRepository->run('reset', ['--hard']));
+        $this->symfonyStyle->warning($this->gitRepository->run('pull'));
     }
 
     public function switch(string $branch, bool $create = false): void

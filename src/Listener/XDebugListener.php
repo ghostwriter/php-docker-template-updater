@@ -16,9 +16,7 @@ final class XDebugListener extends AbstractListener
         $to = $event->getTo();
 
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
-            if (! $this->isBranch(self::BRANCH_MAIN)) {
-                $this->reset();
-            }
+            $this->reset();
 
             $dockerFile = $this->dockerfilePath($phpVersion);
             if (! is_file($dockerFile)) {

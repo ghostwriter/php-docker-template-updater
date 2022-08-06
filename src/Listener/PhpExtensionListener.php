@@ -16,12 +16,10 @@ final class PhpExtensionListener extends AbstractListener
         [$extension, $from] = explode('-', $event->getFrom());
         [, $to] = explode('-', $event->getTo());
 
-        $this->reset();
-        $this->switch(self::BRANCH_MAIN);
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
             foreach (PhpSAPI::SUPPORTED as $type) {
                 if (! $this->isBranch(self::BRANCH_MAIN)) {
-                    $this->switch(self::BRANCH_MAIN);
+                    $this->reset();
                 }
 
                 $dockerFile = $this->dockerfilePath($phpVersion, $type);

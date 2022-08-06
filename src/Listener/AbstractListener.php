@@ -95,7 +95,11 @@ abstract class AbstractListener
         $this->symfonyStyle->warning($this->gitRepository->run('push'));
         Process::fromShellCommandline('gh pr create --base "main" -f')->mustRun();
         Process::fromShellCommandline(
-            sprintf('gh pr merge --merge --delete-branch --subject "%s" --body "%s" ', $commitMessage, $signedOffBy . PHP_EOL)
+            sprintf(
+                'gh pr merge --merge --delete-branch --subject "%s" --body "%s" ',
+                $commitMessage,
+                $signedOffBy . PHP_EOL
+            )
         )->mustRun();
     }
 

@@ -17,7 +17,7 @@ final class ComposerListener extends AbstractListener
 
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
             if (! $this->isBranch(self::BRANCH_MAIN)) {
-                $this->checkout(self::BRANCH_MAIN);
+                $this->reset();
             }
 
             $dockerFile = $this->dockerfilePath($phpVersion, 'composer');

@@ -11,6 +11,8 @@ use Gitonomy\Git\Repository;
 use RuntimeException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
+use Throwable;
+use function array_key_exists;
 
 abstract class AbstractListener
 {
@@ -109,15 +111,11 @@ abstract class AbstractListener
             if ($output) {
                 /** @var array{'number':int} $result */
                 $result = json_decode($output, true);
-                if (\array_key_exists('number', $result)) {
-                    $commitMessage = \sprintf(
-                        '%s (#%s)',
-                        $commitMessage,
-                        $result['number']
-                    );
+                if (array_key_exists('number', $result)) {
+                    $commitMessage = \sprintf('%s (#%s)', $commitMessage, $result['number']);
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
         }
 
         Process::fromShellCommandline(

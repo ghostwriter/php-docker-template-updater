@@ -12,7 +12,6 @@ Helps me update various docker templates in `ghostwriter/php`.
 >
 > This project is not finished yet, work in progress.
 
-
 ## Installation
 
 You can install the package via composer:
@@ -23,14 +22,14 @@ composer require ghostwriter/ghostwriter-php-docker-template-updater
 
 ## Usage
 
-```shell
-$ ghostwriter-php-docker-template-updater composer {from:version} {to:version}
+``` bash
+ghostwriter-php-docker-template-updater composer {from:version} {to:version}
 
-$ ghostwriter-php-docker-template-updater ext {from:extension-version} {to:extension-version}
+ghostwriter-php-docker-template-updater ext {from:extension-version} {to:extension-version}
 
-$ ghostwriter-php-docker-template-updater php {from:version} {to:version}
+ghostwriter-php-docker-template-updater php {from:version} {to:version}
 
-$ ghostwriter-php-docker-template-updater xdebug {from:version} {to:version}
+ghostwriter-php-docker-template-updater xdebug {from:version} {to:version}
 ```
 
 ## Testing

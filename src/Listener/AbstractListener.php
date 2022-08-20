@@ -19,7 +19,10 @@ abstract class AbstractListener
      */
     protected const BRANCH_MAIN = 'main';
 
-    private const SIGNED_OFF_BY='Signed-off-by: Nathanael Esayeas <nathanael.esayeas@protonmail.com>';
+    /**
+     * @var string
+     */
+    protected const SIGNED_OFF_BY = 'Signed-off-by: Nathanael Esayeas <nathanael.esayeas@protonmail.com>';
 
     public function __construct(
         protected Repository $gitRepository,
@@ -93,7 +96,30 @@ abstract class AbstractListener
     public function pushAndMerge(string $commitMessage, string $signedOffBy = self::SIGNED_OFF_BY): void
     {
         $this->symfonyStyle->warning($this->gitRepository->run('push'));
+
         Process::fromShellCommandline('gh pr create --base "main" -f')->mustRun();
+
+        $output = Process::fromShellCommandline('gh pr view --json number')
+            ->mustRun()
+            ->getOutput();
+
+        $this->symfonyStyle->info($output);
+
+        try {
+            if ($output) {
+                /** @var array{'number':int} $result */
+                $result = json_decode($output, true);
+                if (\array_key_exists('number', $result)) {
+                    $commitMessage = \sprintf(
+                        '%s (#%s)',
+                        $commitMessage,
+                        $result['number']
+                    );
+                }
+            }
+        } catch (\Throwable $e) {
+        }
+
         Process::fromShellCommandline(
             sprintf(
                 'gh pr merge --merge --delete-branch --subject "%s" --body "%s" ',

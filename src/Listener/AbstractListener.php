@@ -7,6 +7,7 @@ namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Listener;
 
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpSAPI;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
+use Ghostwriter\Json\Json;
 use Gitonomy\Git\Repository;
 use RuntimeException;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -108,14 +109,14 @@ abstract class AbstractListener
         $this->symfonyStyle->info($output);
 
         try {
-            if ($output) {
-                /** @var array{'number':int} $result */
-                $result = json_decode($output, true);
+            if ('' !== $output && '0' !== $output) {
+                /** @var array{'number'?:int} $result */
+                $result = Json::decode($output);
                 if (array_key_exists('number', $result)) {
                     $commitMessage = \sprintf('%s (#%s)', $commitMessage, $result['number']);
                 }
             }
-        } catch (Throwable $e) {
+        } catch (Throwable) {
         }
 
         Process::fromShellCommandline(

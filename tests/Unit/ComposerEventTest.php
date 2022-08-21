@@ -22,20 +22,17 @@ final class ComposerEventTest extends AbstractTestCase
      */
     public function testTrue(): void
     {
-        self::assertInstanceOf(
-            ComposerEvent::class,
-            new ComposerEvent(
-                new ArrayInput(
-                    [
-                        'from' => '1.2.3',
-                        'to' =>'1.2.4',
-                    ],
-                    new InputDefinition([
-                        new InputArgument('from', InputArgument::REQUIRED),
-                        new InputArgument('to', InputArgument::REQUIRED),
-                    ])
-                )
+        self::assertInstanceOf(ComposerEvent::class, new ComposerEvent(
+            new ArrayInput(
+                [
+                    'from' => '1.2.3',
+                    'to' => '1.2.4',
+                ],
+                new InputDefinition([
+                    new InputArgument('from', InputArgument::REQUIRED),
+                    new InputArgument('to', InputArgument::REQUIRED),
+                ])
             )
-        );
+        ));
     }
 }

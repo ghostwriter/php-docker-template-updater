@@ -10,6 +10,7 @@ use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpSAPI;
  * @coversDefaultClass \Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpSAPI
  *
  * @internal
+ *
  * @small
  */
 final class PhpSAPITest extends AbstractTestCase

@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputDefinition;
  * @coversDefaultClass \Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\ComposerEvent
  *
  * @internal
+ *
  * @small
  */
 final class ComposerEventTest extends AbstractTestCase

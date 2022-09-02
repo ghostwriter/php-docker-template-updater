@@ -10,6 +10,7 @@ use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
  * @coversDefaultClass \Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion
  *
  * @internal
+ *
  * @small
  */
 final class PhpVersionTest extends AbstractTestCase

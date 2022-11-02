@@ -36,6 +36,7 @@ abstract class AbstractListener
             if (! is_file(sprintf('%s/%s/Dockerfile', $cwd, $version))) {
                 throw new RuntimeException('Invalid dir');
             }
+
             foreach (PhpSAPI::SUPPORTED as $type) {
                 if (! is_file(sprintf('%s/%s/%s/Dockerfile', $cwd, $version, $type))) {
                     throw new RuntimeException('Invalid SAPI dir');

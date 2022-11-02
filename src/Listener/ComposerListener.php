@@ -10,10 +10,14 @@ use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
 
 final class ComposerListener extends AbstractListener
 {
-    public function __invoke(ComposerEvent $event): void
+    /**
+     * @var string
+     */
+    private const FORMAT = '_VERSION %s';
+    public function __invoke(ComposerEvent $composerEvent): void
     {
-        $from = $event->getFrom();
-        $to = $event->getTo();
+        $from = $composerEvent->getFrom();
+        $to = $composerEvent->getTo();
 
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
             $this->reset();
@@ -22,10 +26,8 @@ final class ComposerListener extends AbstractListener
             if (! is_file($dockerFile)) {
                 continue;
             }
-
-            $format = '_VERSION %s';
-            $formattedFrom = sprintf($format, $from);
-            $formattedTo = sprintf($format, $to);
+            $formattedFrom = sprintf(self::FORMAT, $from);
+            $formattedTo = sprintf(self::FORMAT, $to);
 
             $dockerFileContents = file_get_contents($dockerFile);
             if (str_contains($dockerFileContents, $formattedFrom)) {

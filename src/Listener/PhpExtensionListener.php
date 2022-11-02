@@ -11,10 +11,10 @@ use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
 
 final class PhpExtensionListener extends AbstractListener
 {
-    public function __invoke(PhpExtensionEvent $event): void
+    public function __invoke(PhpExtensionEvent $phpExtensionEvent): void
     {
-        [$extension, $from] = explode('-', $event->getFrom());
-        [, $to] = explode('-', $event->getTo());
+        [$extension, $from] = explode('-', $phpExtensionEvent->getFrom());
+        [, $to] = explode('-', $phpExtensionEvent->getTo());
 
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
             foreach (PhpSAPI::SUPPORTED as $type) {

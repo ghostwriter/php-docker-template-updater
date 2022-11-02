@@ -11,10 +11,14 @@ use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
 
 final class PhpVersionListener extends AbstractListener
 {
-    public function __invoke(PhpVersionEvent $event): void
+    /**
+     * @var string
+     */
+    private const FORMAT = 'php:%s-';
+    public function __invoke(PhpVersionEvent $phpVersionEvent): void
     {
-        $from = $event->getFrom();
-        $to = $event->getTo();
+        $from = $phpVersionEvent->getFrom();
+        $to = $phpVersionEvent->getTo();
 
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
             foreach (PhpSAPI::SUPPORTED as $type) {
@@ -24,16 +28,16 @@ final class PhpVersionListener extends AbstractListener
                 if (! is_file($dockerFile)) {
                     continue;
                 }
-                $format = 'php:%s-';
+
                 $dockerFileContents = file_get_contents($dockerFile);
-                if (str_contains($dockerFileContents, sprintf($format, $from))) {
+                if (str_contains($dockerFileContents, sprintf(self::FORMAT, $from))) {
                     $branchName = $this->branchName($phpVersion, 'php-' . $type, $from, $to);
 
                     $this->switch($branchName, ! $this->hasBranch($branchName));
 
                     file_put_contents(
                         $dockerFile,
-                        str_replace(sprintf($format, $from), sprintf($format, $to), $dockerFileContents)
+                        str_replace(sprintf(self::FORMAT, $from), sprintf(self::FORMAT, $to), $dockerFileContents)
                     );
 
                     if ($this->hasChanges()) {

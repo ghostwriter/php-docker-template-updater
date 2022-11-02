@@ -65,7 +65,6 @@ use function sprintf;
     $container->extend(
         ListenerProvider::class,
         static function (ContainerInterface $container, object $listenerProvider): ListenerProvider {
-            /** @var ListenerProvider $listenerProvider */
             $finder = $container->build(Finder::class);
 
             // $listenerProvider->addListener(static fn (object $val) => var_dump($val::class));
@@ -107,7 +106,7 @@ use function sprintf;
         ->setCode(
             static fn (
                 InputInterface $input,
-                OutputInterface $_
+                OutputInterface $output
             ): int => $container->get(Dispatcher::class)
                 ->dispatch(match ($input->getArgument('context')) {
                     'composer' => new ComposerEvent($input),

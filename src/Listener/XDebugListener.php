@@ -10,10 +10,10 @@ use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\PhpVersion;
 
 final class XDebugListener extends AbstractListener
 {
-    public function __invoke(XDebugEvent $event): void
+    public function __invoke(XDebugEvent $xDebugEvent): void
     {
-        $from = $event->getFrom();
-        $to = $event->getTo();
+        $from = $xDebugEvent->getFrom();
+        $to = $xDebugEvent->getTo();
 
         foreach (PhpVersion::SUPPORTED as $phpVersion) {
             $this->reset();

@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event;
 
-use Ghostwriter\EventDispatcher\AbstractEvent as AbstractEventDispatcherAbstractEvent;
+use Ghostwriter\EventDispatcher\Contract\EventInterface;
+use Ghostwriter\EventDispatcher\Traits\EventTrait;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 
-abstract class AbstractEvent extends AbstractEventDispatcherAbstractEvent
+abstract class AbstractEvent implements EventInterface
 {
+    use EventTrait;
+
     private string $from;
 
     private string $to;

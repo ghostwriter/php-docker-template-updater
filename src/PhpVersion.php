@@ -52,6 +52,11 @@ final class PhpVersion
     public const PHP_82 = '8.2';
 
     /**
+     * @var string
+     */
+    public const PHP_83 = '8.3';
+
+    /**
      * @var string[]
      */
     public const SUPPORTED = [
@@ -64,5 +69,6 @@ final class PhpVersion
         self::PHP_80,
         self::PHP_81,
         self::PHP_82,
+        self::PHP_83,
     ];
 }

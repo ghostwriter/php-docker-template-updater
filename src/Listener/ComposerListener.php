@@ -14,6 +14,7 @@ final class ComposerListener extends AbstractListener
      * @var string
      */
     private const FORMAT = '_VERSION %s';
+
     public function __invoke(ComposerEvent $composerEvent): void
     {
         $from = $composerEvent->getFrom();

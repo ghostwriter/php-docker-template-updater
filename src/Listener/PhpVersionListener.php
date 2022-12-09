@@ -15,6 +15,7 @@ final class PhpVersionListener extends AbstractListener
      * @var string
      */
     private const FORMAT = 'php:%s-';
+
     public function __invoke(PhpVersionEvent $phpVersionEvent): void
     {
         $from = $phpVersionEvent->getFrom();

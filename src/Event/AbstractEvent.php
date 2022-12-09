@@ -9,6 +9,11 @@ use Ghostwriter\EventDispatcher\Traits\EventTrait;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 
+/**
+ * @template TPropagationStopped of bool
+ *
+ * @implements EventInterface<TPropagationStopped>
+ */
 abstract class AbstractEvent implements EventInterface
 {
     use EventTrait;

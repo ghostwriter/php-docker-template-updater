@@ -7,9 +7,10 @@ namespace Ghostwriter\GhostwriterPhpDockerTemplateUpdater;
 
 use Ghostwriter\Container\Container;
 use Ghostwriter\Container\Contract\ContainerInterface;
+use Ghostwriter\EventDispatcher\Contract\DispatcherInterface;
+use Ghostwriter\EventDispatcher\Contract\ListenerProviderInterface;
 use Ghostwriter\EventDispatcher\Dispatcher;
 use Ghostwriter\EventDispatcher\ListenerProvider;
-use Ghostwriter\EventDispatcher\ServiceProvider\EventDispatcherServiceProvider;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\ComposerEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\PhpExtensionEvent;
 use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\PhpVersionEvent;
@@ -47,42 +48,49 @@ use function sprintf;
      */
 
     $container = Container::getInstance();
-    $container->register(EventDispatcherServiceProvider::class);
+
+    $container->bind(ListenerProvider::class);
+    $container->alias(ListenerProvider::class, ListenerProviderInterface::class);
+    $container->set(
+        Dispatcher::class,
+        static fn (ContainerInterface $container): Dispatcher => $container->build(
+            Dispatcher::class,
+            [
+                'listenerProvider' => $container->get(ListenerProviderInterface::class),
+            ]
+        )
+    );
+    $container->alias(Dispatcher::class, DispatcherInterface::class);
+
     // Input
     $container->bind(ArgvInput::class);
     $container->bind(ArrayInput::class);
     $container->bind(StringInput::class);
-    $container->alias(Input::class, ArgvInput::class);
-    $container->alias(InputInterface::class, Input::class);
+    $container->alias(ArgvInput::class, Input::class);
+    $container->alias(Input::class, InputInterface::class);
     // Output
     $container->bind(ConsoleOutput::class);
     $container->bind(NullOutput::class);
     $container->bind(SymfonyStyle::class);
-    $container->alias(Output::class, ConsoleOutput::class);
-    $container->alias(OutputInterface::class, Output::class);
+    $container->alias(ConsoleOutput::class, Output::class);
+    $container->alias(Output::class, OutputInterface::class);
 
-    /** @param ListenerProvider $listenerProvider */
     $container->extend(
         ListenerProvider::class,
         static function (ContainerInterface $container, object $listenerProvider): ListenerProvider {
-            $finder = $container->build(Finder::class);
-
-            // $listenerProvider->addListener(static fn (object $val) => var_dump($val::class));
-
-            $finder->files()
+            $finder = $container->build(Finder::class)
+                ->files()
                 ->in(dirname(__DIR__) . '/src/Listener/')
                 ->name('*Listener.php')
                 ->notName('Abstract*.php')
                 ->sortByName();
 
+            /** @var ListenerProvider $listenerProvider */
             foreach ($finder->getIterator() as $splFileInfo) {
                 $event = sprintf('%s\Event\%sEvent', __NAMESPACE__, $splFileInfo->getBasename('Listener.php'));
-
                 $listener =  sprintf("%s\Listener\%s", __NAMESPACE__, $splFileInfo->getBasename('.php'));
-
                 $listenerProvider->addListenerService($event, $listener);
             }
-
             return $listenerProvider;
         }
     );

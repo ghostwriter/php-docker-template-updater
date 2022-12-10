@@ -74,35 +74,29 @@
         },
         {
             "name": "ghostwriter/container",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ghostwriter/container.git",
-                "reference": "9e018814033eed7652cbc98b67955f8d11a344a3"
+                "reference": "dff67ca920bcbffdf9246cfa809f62f8bc1534a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ghostwriter/container/zipball/9e018814033eed7652cbc98b67955f8d11a344a3",
-                "reference": "9e018814033eed7652cbc98b67955f8d11a344a3",
+                "url": "https://api.github.com/repos/ghostwriter/container/zipball/dff67ca920bcbffdf9246cfa809f62f8bc1534a9",
+                "reference": "dff67ca920bcbffdf9246cfa809f62f8bc1534a9",
                 "shasum": ""
             },
             "require": {
-                "ghostwriter/option": "^1.0",
                 "php": ">=8.0,<8.3"
             },
             "require-dev": {
                 "infection/infection": "^0.26",
-                "phpstan/extension-installer": "^1.2",
-                "phpstan/phpstan": "^1.9",
-                "phpstan/phpstan-deprecation-rules": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.2",
-                "phpstan/phpstan-strict-rules": "^1.4",
                 "phpunit/phpunit": "^9.5",
                 "psalm/plugin-phpunit": "^0.18",
                 "rector/rector": "^0.14",
                 "slevomat/coding-standard": "^8.6",
                 "symplify/easy-coding-standard": "^11.1",
-                "vimeo/psalm": "^4.30"
+                "vimeo/psalm": "^5.1"
             },
             "type": "library",
             "autoload": {
@@ -131,7 +125,7 @@
             ],
             "support": {
                 "issues": "https://github.com/ghostwriter/container/issues",
-                "source": "https://github.com/ghostwriter/container/tree/1.1.0"
+                "source": "https://github.com/ghostwriter/container/tree/1.1.1"
             },
             "funding": [
                 {
@@ -139,7 +133,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-11-26T20:45:47+00:00"
+            "time": "2022-12-10T03:53:14+00:00"
         },
         {
             "name": "ghostwriter/event-dispatcher",

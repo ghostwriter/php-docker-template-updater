@@ -69,7 +69,6 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::PRIVATIZATION,
         SetList::PSR_4,
         SetList::TYPE_DECLARATION,
-        SetList::TYPE_DECLARATION_STRICT,
         SetList::EARLY_RETURN,
         SetList::PHP_81,
     ]);
@@ -105,7 +104,6 @@ return static function (RectorConfig $rectorConfig): void {
     );
     // register single rule
     $rectorConfig->rules([
-        TypedPropertyRector::class,
         RestoreDefaultNullToNullableTypePropertyRector::class,
         AddSeeTestAnnotationRector::class,
         AssertCompareToSpecificMethodRector::class,

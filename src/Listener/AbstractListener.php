@@ -33,7 +33,10 @@ abstract class AbstractListener
     ) {
         $cwd = $this->gitRepository->getWorkingDir();
         foreach (PhpVersion::SUPPORTED as $version) {
-            if ($version !== PhpVersion::PHP_83 && ! is_file(sprintf('%s/%s/Dockerfile', $cwd, $version))) {
+            if (PhpVersion::PHP_83 === $version) {
+                continue;
+            }
+            if (! is_file(sprintf('%s/%s/Dockerfile', $cwd, $version))) {
                 throw new RuntimeException('Invalid dir');
             }
 

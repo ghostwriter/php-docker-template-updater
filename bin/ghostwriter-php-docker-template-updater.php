@@ -89,7 +89,7 @@ use function sprintf;
             foreach ($finder->getIterator() as $splFileInfo) {
                 $event = sprintf('%s\Event\%sEvent', __NAMESPACE__, $splFileInfo->getBasename('Listener.php'));
                 $listener =  sprintf("%s\Listener\%s", __NAMESPACE__, $splFileInfo->getBasename('.php'));
-                $listenerProvider->addListenerService($event, $listener);
+                $listenerProvider->bindListener($event, $listener);
             }
             return $listenerProvider;
         }

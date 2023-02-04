@@ -20,12 +20,6 @@ final class PhpVersionTest extends AbstractTestCase
      */
     public function testTrue(): void
     {
-        self::assertContains(PhpVersion::PHP_56, PhpVersion::SUPPORTED);
-        self::assertContains(PhpVersion::PHP_70, PhpVersion::SUPPORTED);
-        self::assertContains(PhpVersion::PHP_71, PhpVersion::SUPPORTED);
-        self::assertContains(PhpVersion::PHP_72, PhpVersion::SUPPORTED);
-        self::assertContains(PhpVersion::PHP_73, PhpVersion::SUPPORTED);
-        self::assertContains(PhpVersion::PHP_74, PhpVersion::SUPPORTED);
         self::assertContains(PhpVersion::PHP_80, PhpVersion::SUPPORTED);
         self::assertContains(PhpVersion::PHP_81, PhpVersion::SUPPORTED);
         self::assertContains(PhpVersion::PHP_82, PhpVersion::SUPPORTED);

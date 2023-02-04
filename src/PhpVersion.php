@@ -59,10 +59,5 @@ final class PhpVersion
     /**
      * @var string[]
      */
-    public const SUPPORTED = [
-        self::PHP_80,
-        self::PHP_81,
-        self::PHP_82,
-        self::PHP_83,
-    ];
+    public const SUPPORTED = [self::PHP_80, self::PHP_81, self::PHP_82, self::PHP_83];
 }

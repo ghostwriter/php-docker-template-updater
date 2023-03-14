@@ -1,2 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.22.0@fc2c6ab4d5fa5d644d8617089f012f3bb84b8703"/>
+<files psalm-version="5.8.0@9cf4f60a333f779ad3bc704a555920e81d4fdcda">
+  <file src="src/Event/AbstractEvent.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Listener/AbstractListener.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+      <code>checkout</code>
+      <code>info</code>
+      <code>isBranch</code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedReturnValue>
+      <code>string</code>
+      <code>string</code>
+    </PossiblyUnusedReturnValue>
+  </file>
+  <file src="src/Listener/ComposerListener.php">
+    <UnusedClass>
+      <code>ComposerListener</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Listener/PhpExtensionListener.php">
+    <UnusedClass>
+      <code>PhpExtensionListener</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Listener/PhpVersionListener.php">
+    <UnusedClass>
+      <code>PhpVersionListener</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Listener/XDebugListener.php">
+    <UnusedClass>
+      <code>XDebugListener</code>
+    </UnusedClass>
+  </file>
+</files>

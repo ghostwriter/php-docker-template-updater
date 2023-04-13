@@ -18,19 +18,11 @@ use Ghostwriter\GhostwriterPhpDockerTemplateUpdater\Event\XDebugEvent;
 use Gitonomy\Git\Repository;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\SingleCommandApplication;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use function dirname;
 use function sprintf;
@@ -49,35 +41,15 @@ use function sprintf;
 
     $container = Container::getInstance();
 
-    $container->bind(ListenerProvider::class);
-    $container->alias(ListenerProvider::class, ListenerProviderInterface::class);
-    $container->set(
-        Dispatcher::class,
-        static fn (ContainerInterface $container): Dispatcher => $container->build(
-            Dispatcher::class,
-            [
-                'listenerProvider' => $container->get(ListenerProviderInterface::class),
-            ]
-        )
-    );
-    $container->alias(Dispatcher::class, DispatcherInterface::class);
-
-    // Input
-    $container->bind(ArgvInput::class);
-    $container->bind(ArrayInput::class);
-    $container->bind(StringInput::class);
-    $container->alias(ArgvInput::class, Input::class);
-    $container->alias(Input::class, InputInterface::class);
-    // Output
-    $container->bind(ConsoleOutput::class);
-    $container->bind(NullOutput::class);
-    $container->bind(SymfonyStyle::class);
-    $container->alias(ConsoleOutput::class, Output::class);
-    $container->alias(Output::class, OutputInterface::class);
+    $container->alias(DispatcherInterface::class, Dispatcher::class);
+    $container->alias(ListenerProviderInterface::class, ListenerProvider::class);
 
     $container->extend(
-        ListenerProvider::class,
-        static function (ContainerInterface $container, object $listenerProvider): ListenerProvider {
+        ListenerProviderInterface::class,
+        static function (
+            ContainerInterface $container,
+            ListenerProviderInterface $listenerProvider
+        ): ListenerProviderInterface {
             $finder = $container->build(Finder::class)
                 ->files()
                 ->in(dirname(__DIR__) . '/src/Listener/')
@@ -85,9 +57,10 @@ use function sprintf;
                 ->notName('Abstract*.php')
                 ->sortByName();
 
-            /** @var ListenerProvider $listenerProvider */
             foreach ($finder->getIterator() as $splFileInfo) {
+                /** @var class-string $event */
                 $event = sprintf('%s\Event\%sEvent', __NAMESPACE__, $splFileInfo->getBasename('Listener.php'));
+                /** @var class-string $listener */
                 $listener =  sprintf("%s\Listener\%s", __NAMESPACE__, $splFileInfo->getBasename('.php'));
                 $listenerProvider->bindListener($event, $listener);
             }
@@ -97,7 +70,7 @@ use function sprintf;
 
     $container->set(
         Repository::class,
-        static fn (ContainerInterface $container): object =>
+        static fn (ContainerInterface $container): Repository =>
         $container->build(Repository::class, [
             'dir'=> getcwd(),
         ])
@@ -112,19 +85,22 @@ use function sprintf;
         ->addArgument('to', InputArgument::REQUIRED, 'The new version.')
         ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Simulate the update.')
         ->setCode(
-            static fn (
-                InputInterface $input,
-                OutputInterface $output
-            ): int => $container->get(Dispatcher::class)
-                ->dispatch(match ($input->getArgument('context')) {
-                    'composer' => new ComposerEvent($input),
-                    'ext' => new PhpExtensionEvent($input),
-                    'php' => new PhpVersionEvent($input),
-                    'xdebug' => new XDebugEvent($input),
-                    default => throw new InvalidArgumentException()
-                })->isPropagationStopped() ?
-                    Command::FAILURE :
-                    Command::SUCCESS
+            static function (InputInterface $input, OutputInterface $output) use ($container): int {
+                $container->set(InputInterface::class, $input);
+                $container->set(OutputInterface::class, $output);
+
+                if ($container->get(Dispatcher::class)
+                    ->dispatch(match ($input->getArgument('context')) {
+                        'composer' => new ComposerEvent($input),
+                        'ext' => new PhpExtensionEvent($input),
+                        'php' => new PhpVersionEvent($input),
+                        'xdebug' => new XDebugEvent($input),
+                        default => throw new InvalidArgumentException()
+                    })->isPropagationStopped()) {
+                    return Command::FAILURE;
+                }
+                return Command::SUCCESS;
+            }
         )
         ->run();
 })($_composer_autoload_path ?? dirname(__DIR__) . '/vendor/autoload.php');

@@ -1,16 +1,12 @@
 # Ghostwriter-PHP Docker Template Updater
 
 [![Compliance](https://github.com/ghostwriter/ghostwriter-php-docker-template-updater/actions/workflows/compliance.yml/badge.svg)](https://github.com/ghostwriter/ghostwriter-php-docker-template-updater/actions/workflows/compliance.yml)
-[![Supported PHP Version](https://badgen.net/packagist/php/ghostwriter/ghostwriter-php-docker-template-updater?color=8892bf)](https://www.php.net/supported-versions)
-[![Type Coverage](https://shepherd.dev/github/ghostwriter/ghostwriter-php-docker-template-updater/coverage.svg)](https://shepherd.dev/github/ghostwriter/ghostwriter-php-docker-template-updater)
-[![Latest Version on Packagist](https://badgen.net/packagist/v/ghostwriter/ghostwriter-php-docker-template-updater)](https://packagist.org/packages/ghostwriter/ghostwriter-php-docker-template-updater)
-[![Downloads](https://badgen.net/packagist/dt/ghostwriter/ghostwriter-php-docker-template-updater?color=blue)](https://packagist.org/packages/ghostwriter/ghostwriter-php-docker-template-updater)
 
 Helps me update various docker templates in `ghostwriter/php`.
 
 > **Warning**
 >
-> This project is not finished yet, work in progress.
+> This project is not meant to be used by others but you're welcome too.
 
 ## Installation
 

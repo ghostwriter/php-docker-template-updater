@@ -34,12 +34,12 @@
     ],
     "require": {
         "php": ">=8.1,<8.3",
-        "ghostwriter/collection": "^1.3",
+        "ghostwriter/collection": "^1.3.1",
         "ghostwriter/container": "^1.5",
         "ghostwriter/event-dispatcher": "^1.4.1",
         "ghostwriter/json": "^1.1.0",
-        "gitonomy/gitlib": "^1.3.7",
-        "symfony/console": "^6.2.8",
+        "gitonomy/gitlib": "^1.3.8",
+        "symfony/console": "^6.2.11",
         "symfony/finder": "^6.2.7"
     },
     "require-dev": {
